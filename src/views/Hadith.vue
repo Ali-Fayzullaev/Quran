@@ -6,19 +6,19 @@
         <input 
           v-model="searchQuery" 
           type="text" 
-          placeholder="Хадис излаш..."
+          :placeholder="$t('searchPlaceholderHadith')"
           @input="filterHadiths"
         >
         <span class="search-icon"><i class="bi bi-search"></i></span>
       </div>
       <div class="filter-buttons">
         <button 
-          v-for="num in [10, 20, 30, 40, 42 ]" 
+          v-for="num in [10, 20, 30, 42 ]" 
           :key="num" 
           @click="loadHadiths(num)"
           :class="{ active: limit === num }"
         >
-          {{ num }} та
+          {{ num }} {{ lang == "ru" ? "хадисов" : "hadiths" }} 
         </button>
       </div>
     </div>
@@ -43,19 +43,18 @@
         
         <div class="card-content">
           <div class="arabic-text">
-            <h3>Арабча:</h3>
             <p>{{ h.text }}</p>
           </div>
           <div class="translation">
-            <h3>English:</h3>
-            <p>{{ engHadith[index]?.text }}</p>
+            <h3>{{ lang == "ru" ? "Russian" : "English" }}</h3>
+            <p>{{ lang == "ru" ? rusHadith[index]?.text :  engHadith[index]?.text }}</p>
           </div>
           <div class="actions">
             <button v-copy="h.text">
-              <span><i class="bi bi-copy"></i></span> Arab
+              <span><i class="bi bi-copy"></i></span> {{ lang == "ru" ? "Арабский" : "Arabian" }}
             </button>
             <button v-copy="engHadith[index]?.text">
-              <span><i class="bi bi-copy"></i></span> English
+              <span><i class="bi bi-copy"></i></span> {{ lang == "ru" ? "Русский" : "English" }}
             </button>
           </div>
         </div>
@@ -81,12 +80,18 @@ export default {
     return {
       hadith: [],
       engHadith: [],
+      rusHadith: [],
       searchQuery: '',
       filteredHadith: [],
       expandedCards: [],
       limit: 50,
       showScrollButton: false
     };
+  },
+  computed: {
+    lang() {
+      return this.$i18n.locale
+    }
   },
   async created() {
     await this.loadHadiths(this.limit);
@@ -99,13 +104,15 @@ export default {
     async loadHadiths(limit) {
       try {
         this.limit = limit;
-        const [araRes, engRes] = await Promise.all([
+        const [araRes, engRes, rusRes] = await Promise.all([
           axios.get(`https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-nawawi.json`),
-          axios.get(`https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/eng-nawawi.json`)
+          axios.get(`https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/eng-nawawi.json`),
+          axios.get(`https://raw.githubusercontent.com/Ali-Fayzullaev/Quran/refs/heads/main/src/hadithsRus.json`),
         ]);
         
         this.hadith = araRes.data.hadiths.slice(0, limit);
         this.engHadith = engRes.data.hadiths.slice(0, limit);
+        this.rusHadith = rusRes.data.hadiths.slice(0, limit);
         this.filteredHadith = [...this.hadith];
         this.expandedCards = [];
         

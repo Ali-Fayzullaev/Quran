@@ -46,6 +46,7 @@ const messages = {
     assistant: "QuranGPT",
     chooseTopic: "Выберите тему для обсуждения:",
     placeholder: "Напишите сообщение...",
+    searchPlaceholderHadith: "Поиск хадисов..."
     
 
   },
@@ -96,8 +97,11 @@ const messages = {
     chooseTopic: "Choose a topic to discuss:",
     placeholder: "Type a message...",
     longestAyah: "What is the longest ayah in the Quran?",
+    searchPlaceholderHadith: "Search Hadith..."
   },
 };
+
+
 
 const i18n = createI18n({
   locale: "ru",
