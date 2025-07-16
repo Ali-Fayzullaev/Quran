@@ -62,26 +62,26 @@
           </div>
         </div>
         <div class="col-12 col-lg-6">
-         
-
           <div class="card shadow mb-5 border-0">
             <div
               class="card-header bg-gradient text-white text-center"
               style="background: linear-gradient(90deg, #0d6efd, #6610f2)"
             >
-            <div
-            v-if="louding"
-            class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75"
-            style="z-index: 10"
-          >
-            <div class="loader"></div>
-          </div>
+              <div
+                v-if="louding"
+                class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75"
+                style="z-index: 10"
+              >
+                <div class="loader"></div>
+              </div>
               <div class="input-group">
-                <span
+                <button
+                  @click="() => { getLocationByIP(); getTimePray(); }"
                   class="input-group-text bg-white border-end-0"
                   id="basic-addon1"
-                  ><i class="bi bi-geo-alt-fill"></i
-                ></span>
+                >
+                  <i class="bi bi-geo-alt-fill"></i>
+                </button>
                 <input
                   v-model="city"
                   @keyup.enter="getCity, getTimePray"
@@ -89,9 +89,12 @@
                   class="form-control"
                   placeholder="Местополажения..."
                 />
-                <div @click="getCity(), getTimePray()" class="btn btn-success">
+                <button
+                  @click="getCity(), getTimePray()"
+                  class="btn btn-success"
+                >
                   найти
-                </div>
+                </button>
               </div>
             </div>
             <div class="card-body p-0">
@@ -152,8 +155,10 @@ export default {
         reference: "Сахих Муслим",
       },
       louding: false,
-      city: "Astana",
-      country: "Kazakhstan",
+      city: "",
+      cityLo: "",
+      country: "",
+      countryLo: "",
       fajr: "",
       sunrise: "",
       dhuhr: "",
@@ -163,9 +168,26 @@ export default {
     };
   },
   methods: {
+    async getLocationByIP() {
+      this.louding = true;
+      try {
+        const response = await fetch(
+          "http://ip-api.com/json/?fields=city,country,lat,lon"
+        );
+        const data = await response.json();
+        this.cityLo = data.city;
+        this.countryLo = data.country;
+        this.city = this.cityLo
+        this.country = this.countryLo
+        await this.getTimePray();
+      } catch (error) {
+        console.error("Ошибка получения локации:", error);
+        return null;
+      }
+    },
     async getCity() {
       try {
-        this.louding = true
+        this.louding = true;
         const response = await axios.get(
           `https://nominatim.openstreetmap.org/search?city=${this.city}&format=json&limit=1&addressdetails=1`
         );
@@ -173,7 +195,7 @@ export default {
           const data = response.data[0];
           const country = data.address?.country || "Давлат топилмади";
           this.country = country;
-          this.louding = false
+          this.louding = false;
         } else {
           this.country = "Шаҳар топилмади.";
         }
@@ -184,7 +206,7 @@ export default {
     },
     async getTimePray() {
       try {
-        this.louding = true
+        this.louding = true;
         const res = await axios.get(
           `https://api.aladhan.com/v1/timingsByCity/16-07-2025?city=${this?.city}&country=${this?.country}&method=2&language=kz`
         );
@@ -195,11 +217,15 @@ export default {
         this.asr = data.Asr;
         this.maghrib = data.Maghrib;
         this.isha = data.Isha;
-        this.louding = false
+        this.louding = false;
       } catch (error) {
         console.log("Ошибка", error);
       }
     },
+  },
+  mounted() {
+    this.getLocationByIP();
+    this.getTimePray();
   },
 };
 </script>
