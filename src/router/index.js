@@ -6,6 +6,7 @@ import Duo from "@/views/Duo.vue"; // Страница дуаов
 import QuranDet from "@/components/QuranDet.vue"; // Детальная страница суры
 import ChatGPT from "@/components/ChatGPT.vue";
 import i18n from "@/i18n";
+import NotFound from "@/views/NotFound.vue";
 const routes = [
   { path: "/", component: Home,
     meta: { title: "siteTitle" },
@@ -35,6 +36,13 @@ const routes = [
     component: ChatGPT,
     meta: { title: "chatPageTitle" }
   },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFound,
+    meta: { title: 'notFoundPageTitle' }
+  }
+  
   
   
 ];

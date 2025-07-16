@@ -18,7 +18,7 @@
           @click="loadHadiths(num)"
           :class="{ active: limit === num }"
         >
-          {{ num }} {{ lang == "ru" ? "хадисов" : "hadiths" }} 
+          {{ num }}
         </button>
       </div>
     </div>
