@@ -223,10 +223,6 @@ export default {
       }
     },
   },
-  mounted() {
-    this.getLocationByIP();
-    this.getTimePray();
-  },
 };
 </script>
 
