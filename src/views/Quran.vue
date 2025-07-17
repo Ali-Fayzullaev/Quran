@@ -32,7 +32,7 @@
             <strong>{{ ayah.chapter }} : {{ ayah.verse }}</strong>
             <router-link
               class="link-underline link-underline-opacity-0"
-              :to="`/qurandet/${ayah.chapter}#${ayah.chapter}- ${ayah.verse}`"
+              :to="`/qurandet/${ayah.chapter}#${ayah.chapter}-${ayah.verse}`"
             >
               <p class="fs-5 arabic-text">{{ ayah.text }}</p>
             </router-link>

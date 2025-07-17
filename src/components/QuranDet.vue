@@ -14,12 +14,12 @@
       
       <!-- Translation Select - Hidden on smallest screens -->
       <div v-if="transition.length" class="nav-select mx-1 mx-sm-2 d-none d-sm-flex">
-        <div class="select-wrapper">
+        <div class="select-wrapper   rounded-5">
           <i class="bi bi-translate select-icon"></i>
           <select
             v-model="selectedTranslation"
             @change="getSurah()"
-            class="form-select"
+            class="form-select rounded-5 "
           >
             <option
               v-for="(item, index) in transition"
@@ -34,12 +34,12 @@
       
       <!-- Qari Select - Hidden on smallest screens -->
       <div v-if="qoris.length" class="nav-select mx-1 mx-sm-2 d-none d-sm-flex">
-        <div class="select-wrapper">
+        <div class="select-wrapper rounded-5">
           <i class="bi bi-mic select-icon"></i>
           <select
             v-model="selectedQaris"
             @change="getAudioQari(); getSurah()"
-            class="form-select"
+            class="form-select rounded-5"
           >
             <option
               v-for="(item, index) in qoris"
@@ -169,6 +169,7 @@
         v-for="(item, index) in surahAr.ayahs"
         :key="item.number"
         class="ayah-card"
+        
       >
         <!-- Header -->
         <div class="ayah-header">
@@ -207,7 +208,7 @@
 
         <!-- Arabic Ayah -->
         <div v-if="loading" class="px-3">
-          <span class="placeholder-glow">
+          <span class="placeholder-glow" >
             <span
               class="placeholder col-10 bg-success mb-2 rounded"
               style="height: 28px; display: block"
@@ -221,8 +222,8 @@
         <div
           v-else
           class="arabic-text lh-lg"
-          :style="{ fontSize: fontSize + 'px' }"
           :id="`${route.params.selectedSurah}-${item.numberInSurah}`"
+          :style="{ fontSize: fontSize + 'px' }"
         >
           {{ item.text }}
         </div>
@@ -369,13 +370,30 @@ const scrollToHash = () => {
 
   tryScroll();
 };
+onMounted(async () => {
+  await getSurah();
+  await getSurahList();
+  await getTransition();
+  await getAudioQari();
 
-onMounted(() => {
-  getSurah();
-  getSurahList();
-  getTransition();
-  getAudioQari();
+  await nextTick(); // DOM тўлиқ янгиланиши учун
+
+  const hash = route.hash;
+
+  if (hash) {
+    const id = hash.replace('#', '').trim();
+    const el = document.getElementById(id);
+
+    if (el) {
+      el.classList.add('highlight');
+
+      setTimeout(() => {
+        el.classList.remove('highlight');
+      }, 10000);
+    }
+  }
 });
+
 
 watch(
   () => route.params.selectedSurah,
@@ -386,6 +404,14 @@ watch(
 </script>
 
 <style scoped>
+
+.highlight {
+  background-color: rgb(249, 249, 123);
+  border-radius: 10px;
+  padding-right: 15px;
+  transition: background-color 0.5s ease;
+}
+
 /* Умумий стиллар */
 .surah-container {
   max-width: 850px;

@@ -1,6 +1,6 @@
 <template>
   <div class="home-page">
-    <div class="hero-section bg-success text-white py-5 mb-5">
+    <div class="hero-section bg-success-custom text-white py-5 mb-5">
       <div class="container text-center">
         <h1 class="display-1 fw-light mb-3 arabic-text text-center">
           بِسْمِ ٱللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
@@ -12,7 +12,7 @@
     <div class="container">
       <div class="row g-4 mb-5">
         <div class="col-md-4">
-          <div class="card shadow-sm h-100 border-success">
+          <div class="card shadow-sm h-100 bg-success-custom">
             <div class="card-body text-center">
               <i class="bi bi-book fs-1 text-success mb-3"></i>
               <h3 class="card-title">{{ $t("quranTitle") }}</h3>
