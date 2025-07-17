@@ -46,7 +46,15 @@ const messages = {
     assistant: "QuranGPT",
     chooseTopic: "Выберите тему для обсуждения:",
     placeholder: "Напишите сообщение...",
-    searchPlaceholderHadith: "Поиск хадисов..."
+    searchPlaceholderHadith: "Поиск хадисов...",
+    locationPlaceholder: "Введите местоположение...",
+    find: "Найти",
+    fajr: "Фаджр",
+    sunrise: "Восход",
+    dhuhr: "Зухр",
+    asr: "Аср",
+    maghrib: "Магриб",
+    isha: "Иша",
     
 
   },
@@ -97,16 +105,27 @@ const messages = {
     chooseTopic: "Choose a topic to discuss:",
     placeholder: "Type a message...",
     longestAyah: "What is the longest ayah in the Quran?",
-    searchPlaceholderHadith: "Search Hadith..."
+    searchPlaceholderHadith: "Search Hadith...",
+    locationPlaceholder: "Enter location...",
+    find: "Find",
+    fajr: "Fajr",
+    sunrise: "Sunrise",
+    dhuhr: "Dhuhr",
+    asr: "Asr",
+    maghrib: "Maghrib",
+    isha: "Isha",
   },
 };
 
-
+const savedLocale = localStorage.getItem("locale") || "ru";
 
 const i18n = createI18n({
-  locale: "ru",
+  locale: savedLocale,
   fallbackLocale: "en",
   messages,
 });
+
+
+
 
 export default i18n;

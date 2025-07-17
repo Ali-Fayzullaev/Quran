@@ -62,76 +62,129 @@
           </div>
         </div>
         <div class="col-12 col-lg-6">
-          <div class="card shadow mb-5 border-0">
+          <div
+            class="card shadow-sm mb-4 border-0"
+            style="border-radius: 15px; border: 1px solid rgba(0, 160, 83, 0.2)"
+          >
             <div
-              class="card-header bg-gradient text-white text-center"
-              style="background: linear-gradient(90deg, #0d6efd, #6610f2)"
+              class="card-header text-white text-center p-3"
+              style="
+                background: linear-gradient(135deg, #00b09b, #96c93d);
+                border-radius: 15px 15px 0 0 !important;
+              "
             >
               <div
                 v-if="louding"
-                class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75"
-                style="z-index: 10"
+                class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                style="
+                  background: rgba(255, 255, 255, 0.3);
+                  z-index: 10;
+                  border-radius: 14px 14px 0 0;
+                "
               >
-                <div class="loader"></div>
-              </div>
-              <div class="input-group">
-                <button
-                  @click="() => { getLocationByIP(); getTimePray(); }"
-                  class="input-group-text bg-white border-end-0"
-                  id="basic-addon1"
+                <div
+                  class="loader"
+                  role="status"
+                  style="width: 1.5rem; height: 1.5rem"
                 >
-                  <i class="bi bi-geo-alt-fill"></i>
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+              <div class="input-group input-group-sm">
+                <button
+                  @click="getLocationByIP()"
+                  class="input-group-text bg-white border-0"
+                >
+                <i class="bi bi-pin-map-fill text-success"></i>
                 </button>
                 <input
                   v-model="city"
-                  @keyup.enter="getCity, getTimePray"
+                  @keyup.enter="getCity(), getTimePray()"
                   type="text"
-                  class="form-control"
-                  placeholder="Местополажения..."
+                  class="form-control border-0 py-2"
+                  :placeholder="$t('locationPlaceholder')"
+                  style="font-size: 0.9rem"
                 />
                 <button
                   @click="getCity(), getTimePray()"
-                  class="btn btn-success"
+                  class="btn btn-success border-0 px-3"
+                  style="background: #008a5e; font-size: 0.9rem"
                 >
-                  найти
+                  <i class="bi bi-search me-1"></i>{{ $t("find") }}
                 </button>
               </div>
             </div>
             <div class="card-body p-0">
               <div class="row g-0">
                 <div
-                  class="col-6 col-md-4 text-center p-3 border-end border-bottom"
+                  class="col-4 text-center p-2 border-end border-bottom prayer-time-card-sm"
                 >
-                  <i class="bi bi-cloud-sun-fill fs-3 text-primary"></i>
-                  <div class="fw-bold mt-2">Фаджр</div>
-                  <div class="text-muted">{{ fajr }}</div>
+                  <div
+                    class="prayer-icon-sm bg-success bg-opacity-10 text-success"
+                  >
+                    <i class="bi bi-cloud-moon-fill fs-6"></i>
+                  </div>
+                  <div class="fw-bold mt-1 fs-6 text-dark">
+                    {{ $t("fajr") }}
+                  </div>
+                  <div class="text-muted fs-7">{{ fajr }}</div>
                 </div>
                 <div
-                  class="col-6 col-md-4 text-center p-3 border-end border-bottom"
+                  class="col-4 text-center p-2 border-end border-bottom prayer-time-card-sm"
                 >
-                  <i class="bi bi-sunrise-fill fs-3 text-warning"></i>
-                  <div class="fw-bold mt-2">Восход</div>
-                  <div class="text-muted">{{ sunrise }}</div>
+                  <div
+                    class="prayer-icon-sm bg-warning bg-opacity-10 text-warning"
+                  >
+                    <i class="bi bi-sunrise-fill fs-6"></i>
+                  </div>
+                  <div class="fw-bold mt-1 fs-6 text-dark">
+                    {{ $t("sunrise") }}
+                  </div>
+                  <div class="text-muted fs-7">{{ sunrise }}</div>
                 </div>
-                <div class="col-6 col-md-4 text-center p-3 border-bottom">
-                  <i class="bi bi-sun-fill fs-3 text-danger"></i>
-                  <div class="fw-bold mt-2">Зухр</div>
-                  <div class="text-muted">{{ dhuhr }}</div>
+                <div
+                  class="col-4 text-center p-2 border-bottom prayer-time-card-sm"
+                >
+                  <div
+                    class="prayer-icon-sm bg-danger bg-opacity-10 text-danger"
+                  >
+                    <i class="bi bi-sun-fill fs-6"></i>
+                  </div>
+                  <div class="fw-bold mt-1 fs-6 text-dark">
+                    {{ $t("dhuhr") }}
+                  </div>
+                  <div class="text-muted fs-7">{{ dhuhr }}</div>
                 </div>
-                <div class="col-6 col-md-4 text-center p-3 border-end">
-                  <i class="bi bi-sunset-fill fs-3 text-info"></i>
-                  <div class="fw-bold mt-2">Аср</div>
-                  <div class="text-muted">{{ asr }}</div>
+                <div
+                  class="col-4 text-center p-2 border-end prayer-time-card-sm"
+                >
+                  <div class="prayer-icon-sm bg-info bg-opacity-10 text-info">
+                    <i class="bi bi-cloud-sun-fill fs-6"></i>
+                  </div>
+                  <div class="fw-bold mt-1 fs-6 text-dark">{{ $t("asr") }}</div>
+                  <div class="text-muted fs-7">{{ asr }}</div>
                 </div>
-                <div class="col-6 col-md-4 text-center p-3 border-end">
-                  <i class="bi bi-moon-stars-fill fs-3 text-primary"></i>
-                  <div class="fw-bold mt-2">Магриб</div>
-                  <div class="text-muted">{{ maghrib }}</div>
+                <div
+                  class="col-4 text-center p-2 border-end prayer-time-card-sm"
+                >
+                  <div
+                    class="prayer-icon-sm bg-orange bg-opacity-10 text-orange"
+                  >
+                    <i class="bi bi-sunset-fill fs-6"></i>
+                  </div>
+                  <div class="fw-bold mt-1 fs-6 text-dark">
+                    {{ $t("maghrib") }}
+                  </div>
+                  <div class="text-muted fs-7">{{ maghrib }}</div>
                 </div>
-                <div class="col-6 col-md-4 text-center p-3">
-                  <i class="bi bi-moon-fill fs-3 text-dark"></i>
-                  <div class="fw-bold mt-2">Иша</div>
-                  <div class="text-muted">{{ isha }}</div>
+                <div class="col-4 text-center p-2 prayer-time-card-sm">
+                  <div class="prayer-icon-sm bg-dark bg-opacity-10 text-dark">
+                    <i class="bi bi-moon-stars-fill fs-6"></i>
+                  </div>
+                  <div class="fw-bold mt-1 fs-6 text-dark">
+                    {{ $t("isha") }}
+                  </div>
+                  <div class="text-muted fs-7">{{ isha }}</div>
                 </div>
               </div>
             </div>
@@ -177,8 +230,8 @@ export default {
         const data = await response.json();
         this.cityLo = data.city;
         this.countryLo = data.country;
-        this.city = this.cityLo
-        this.country = this.countryLo
+        this.city = this.cityLo;
+        this.country = this.countryLo;
         await this.getTimePray();
       } catch (error) {
         console.error("Ошибка получения локации:", error);
@@ -254,5 +307,46 @@ export default {
   100% {
     transform: rotate(1turn);
   }
+}
+.prayer-time-card-sm {
+  transition: all 0.2s ease;
+  padding-top: 0.8rem !important;
+  padding-bottom: 0.8rem !important;
+}
+
+.prayer-time-card-sm:hover {
+  background-color: rgba(0, 160, 83, 0.05);
+}
+
+.prayer-icon-sm {
+  width: 30px;
+  height: 30px;
+  margin: 0 auto;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.bg-orange {
+  color: #fd7e14;
+}
+
+.fs-7 {
+  font-size: 0.8rem !important;
+}
+
+.card-header {
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+}
+
+.input-group-sm .form-control,
+.input-group-sm .btn,
+.input-group-sm .input-group-text {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  height: 32px;
 }
 </style>

@@ -1,19 +1,19 @@
 <template>
  <div class="sticky-top quran-navbar">
   <div class="container-fluid">
-    <div class="d-flex justify-content-center align-items-center py-2">
+    <div class="d-flex justify-content-center align-items-center py-2 flex-wrap">
       
       <!-- Home Button -->
       <router-link 
         to="/quran"
-        class="nav-icon mx-2"
+        class="nav-icon mx-1 mx-sm-2"
         v-tooltip="$t('home')"
       >
         <i class="bi bi-house-door"></i>
       </router-link>
       
-      <!-- Translation Select -->
-      <div v-if="transition.length" class="nav-select mx-2">
+      <!-- Translation Select - Hidden on smallest screens -->
+      <div v-if="transition.length" class="nav-select mx-1 mx-sm-2 d-none d-sm-flex">
         <div class="select-wrapper">
           <i class="bi bi-translate select-icon"></i>
           <select
@@ -32,8 +32,8 @@
         </div>
       </div>
       
-      <!-- Qari Select -->
-      <div v-if="qoris.length" class="nav-select mx-2">
+      <!-- Qari Select - Hidden on smallest screens -->
+      <div v-if="qoris.length" class="nav-select mx-1 mx-sm-2 d-none d-sm-flex">
         <div class="select-wrapper">
           <i class="bi bi-mic select-icon"></i>
           <select
@@ -53,7 +53,7 @@
       </div>
       
       <!-- Surahs Dropdown -->
-      <div v-if="surahs.length" class="dropdown mx-2">
+      <div v-if="surahs.length" class="dropdown mx-1 mx-sm-2">
         <button
           class="nav-dropdown-btn"
           type="button"
@@ -62,7 +62,7 @@
           v-tooltip="$t('surahs')"
         >
           <i class="bi bi-book"></i>
-          <span class="ms-1">{{ $t('surahs') }}</span>
+          <span class="ms-1 d-none d-sm-inline">{{ $t('surahs') }}</span>
         </button>
         <ul class="dropdown-menu surah-dropdown">
           <li v-for="(surah, index) in surahs" :key="index">
@@ -78,7 +78,7 @@
       </div>
       
       <!-- Font Size Controls -->
-      <div class="font-controls mx-2">
+      <div class="font-controls mx-1 mx-sm-2">
         <button
           @click="minusSize(); minusRu()"
           class="font-btn"
@@ -93,6 +93,64 @@
         >
           <i class="bi bi-plus-lg"></i>
         </button>
+      </div>
+      
+      <!-- Mobile menu toggle for select dropdowns -->
+      <div class="dropdown d-sm-none mx-1">
+        <button
+          class="nav-dropdown-btn"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          v-tooltip="$t('moreOptions')"
+        >
+          <i class="bi bi-three-dots"></i>
+        </button>
+        <ul class="dropdown-menu mobile-dropdown">
+          <!-- Translation Select Mobile -->
+          <li v-if="transition.length">
+            <div class="dropdown-item">
+              <div class="select-wrapper w-100">
+                <i class="bi bi-translate select-icon"></i>
+                <select
+                  v-model="selectedTranslation"
+                  @change="getSurah()"
+                  class="form-select"
+                >
+                  <option
+                    v-for="(item, index) in transition"
+                    :key="index"
+                    :value="item.identifier"
+                  >
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </li>
+          
+          <!-- Qari Select Mobile -->
+          <li v-if="qoris.length">
+            <div class="dropdown-item">
+              <div class="select-wrapper w-100">
+                <i class="bi bi-mic select-icon"></i>
+                <select
+                  v-model="selectedQaris"
+                  @change="getAudioQari(); getSurah()"
+                  class="form-select"
+                >
+                  <option
+                    v-for="(item, index) in qoris"
+                    :key="index"
+                    :value="item.identifier"
+                  >
+                    {{ item.englishName }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>

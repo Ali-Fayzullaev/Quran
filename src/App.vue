@@ -65,7 +65,7 @@
                   <a
                     class="dropdown-item d-flex align-items-center"
                     href="#"
-                    @click.prevent="setLang('ru')"
+                    @click="setLang('ru')"
                   >
                     <span class="flag-icon me-2">🇷🇺</span>
                     <span>Русский</span>
@@ -75,7 +75,7 @@
                   <a
                     class="dropdown-item d-flex align-items-center"
                     href="#"
-                    @click.prevent="setLang('en')"
+                    @click="setLang('en')"
                   >
                     <span class="flag-icon me-2">🇬🇧</span>
                     <span>English</span>
@@ -153,8 +153,14 @@ export default {
     },
   },
   methods: {
+    changeLanguage(lang) {
+      this.$i18n.global.locale = lang;
+      localStorage.setItem("locale", lang);
+      console.log(lang)
+    },
     setLang(lang) {
       this.$i18n.locale = lang;
+      localStorage.setItem("locale", lang)
     },
     startDrag(e) {
       const btn = this.$refs.draggable;
