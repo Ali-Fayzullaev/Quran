@@ -1,7 +1,8 @@
 <template>
   <div class="mushaf-viewer">
     <img
-      :src="`../../public/quran-pages/quran-svg/svg/${String(pageNum).padStart(3, '0')}.svg`"
+    :src="`/quran-pages/quran-svg/svg/${String(pageNum).padStart(3, '0')}.svg`"
+
       alt="Qur'an Page"
       class="mushaf-page"
     />
