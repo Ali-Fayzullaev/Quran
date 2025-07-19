@@ -11,7 +11,6 @@
               alt="Исламские источники"
               style="height: 50px; object-fit: contain"
             />
-            <span class="d-none d-sm-inline fs-5 fw-bold">Quran & Hadith</span>
           </div>
 
           <!-- Кнопка меню для мобильных -->
@@ -598,9 +597,9 @@ export default {
 /* Улучшаем видимость активных ссылок */
 .router-link-exact-active {
   background-color: rgba(25, 135, 84, 0.1);
-  color: #198754 !important;
+  color: #00e1ff !important;
   font-weight: 500;
-  border-left: 3px solid #198754;
+  border-bottom: 3px solid #00e1ff;
 }
 
 /* Улучшаем кнопки в Offcanvas */
