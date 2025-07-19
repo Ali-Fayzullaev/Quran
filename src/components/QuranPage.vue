@@ -7,9 +7,9 @@
       class="mushaf-page"
     />
     <div class="controls">
-      <button @click="prev" :disabled="pageNum === 1">‹ Олдин</button>
+      <button @click="prev" :disabled="pageNum === 1">←</button>
       <span>{{ pageNum }} / 604</span>
-      <button @click="next" :disabled="pageNum === 604">Кейин ›</button>
+      <button @click="next" :disabled="pageNum === 604">→</button>
     </div>
   </div>
 </template>
