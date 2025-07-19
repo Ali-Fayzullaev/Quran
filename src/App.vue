@@ -3,15 +3,30 @@
     <!-- Шапка -->
     <header class="header bg-success text-white shadow mb-0">
       <div class="container">
-        <div class="d-flex justify-content-between align-items-center py-3">
-          <img
-            src="./assets/quaran-img.png"
-            class="rounded-circle"
-            alt="Исламские источники"
-            style="height: 60px; object-fit: contain"
-          />
+        <div class="d-flex justify-content-between align-items-center py-2 py-md-3">
+          <div class="d-flex align-items-center">
+            <img
+              src="./assets/quaran-img.png"
+              class="rounded-circle me-2"
+              alt="Исламские источники"
+              style="height: 50px; object-fit: contain"
+            />
+            <span class="d-none d-sm-inline fs-5 fw-bold">Quran & Hadith</span>
+          </div>
 
-          <div class="d-flex align-items-center gap-3">
+          <!-- Кнопка меню для мобильных -->
+          <button
+            class="btn btn-light d-md-none"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasNavbar"
+            aria-controls="offcanvasNavbar"
+          >
+            <i class="bi bi-list"></i>
+          </button>
+
+          <!-- Основная навигация (скрыта на мобильных) -->
+          <div class="d-none d-md-flex align-items-center gap-3">
             <nav class="d-flex gap-3 gap-md-4 align-items-center">
               <router-link
                 to="/"
@@ -43,18 +58,12 @@
                 class="text-white text-decoration-none"
                 >{{ $t("QuranPage") }}</router-link
               >
-              <!-- <router-link
-                to="/chatgpt"
-                v-tooltip="'Если есть вопросы'"
-                class="text-white text-decoration-none"
-                >GPT</router-link
-              > -->
             </nav>
 
             <!-- Языковой переключатель -->
             <div class="language-switcher dropdown">
               <button
-                class="btn btn-outline-light border-0 dropdown-toggle d-flex align-items-center align-items-center"
+                class="btn btn-outline-light border-0 dropdown-toggle d-flex align-items-center"
                 type="button"
                 id="langDropdown"
                 data-bs-toggle="dropdown"
@@ -94,14 +103,95 @@
       </div>
     </header>
 
+    <!-- Offcanvas меню -->
+    <div
+      class="offcanvas offcanvas-end bg-light"
+      tabindex="-1"
+      id="offcanvasNavbar"
+      aria-labelledby="offcanvasNavbarLabel"
+    >
+      <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title fw-bold" id="offcanvasNavbarLabel">
+          Меню
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="offcanvas-body p-0">
+        <div class="list-group list-group-flush">
+          <router-link
+            to="/"
+            class="list-group-item list-group-item-action py-3"
+          >
+            <i class="bi bi-house-door me-3"></i>
+            {{ $t("home") }}
+          </router-link>
+          <router-link
+            to="/quran"
+            class="list-group-item list-group-item-action py-3"
+          >
+            <i class="bi bi-book me-3"></i>
+            {{ $t("quran") }}
+          </router-link>
+          <router-link
+            to="/hadith"
+            class="list-group-item list-group-item-action py-3"
+          >
+            <i class="bi bi-journal-text me-3"></i>
+            {{ $t("hadith") }}
+          </router-link>
+          <router-link
+            to="/duo"
+            class="list-group-item list-group-item-action py-3"
+          >
+            <i class="bi bi-chat-heart me-3"></i>
+            {{ $t("duo") }}
+          </router-link>
+          <router-link
+            to="/quranpage"
+            class="list-group-item list-group-item-action py-3"
+          >
+            <i class="bi bi-file-earmark-text me-3"></i>
+            {{ $t("QuranPage") }}
+          </router-link>
+        </div>
+
+        <div class="p-3 mt-auto">
+          <h6 class="mb-3">Язык / Language</h6>
+          <div class="d-grid gap-2">
+            <button
+              class="btn btn-outline-success d-flex align-items-center justify-content-center"
+              @click="setLang('ru')"
+              data-bs-dismiss="offcanvas"
+            >
+              <span class="flag-icon me-2">🇷🇺</span>
+              <span>Русский</span>
+            </button>
+            <button
+              class="btn btn-outline-success d-flex align-items-center justify-content-center"
+              @click="setLang('en')"
+              data-bs-dismiss="offcanvas"
+            >
+              <span class="flag-icon me-2">🇬🇧</span>
+              <span>English</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <main class="main bg-light min-vh-100 m-0 p-0">
       <div class="container-fluid m-0 p-0">
         <router-view></router-view>
       </div>
     </main>
 
-    <!-- Чат-контейнер -->
-    <div class="chat-container-app" :class="{ active: openChat }">
+     <!-- Чат-контейнер -->
+     <div class="chat-container-app" :class="{ active: openChat }">
       <transition name="slide-up">
         <div v-if="openChat" class="chat-wrapper-app show">
           <ChatGPT @keydown.esc="openChat = false" @close="openChat = false" />
@@ -135,7 +225,6 @@
     </footer>
   </div>
 </template>
-
 <script>
 import ChatGPT from "./components/ChatGPT.vue";
 
@@ -452,4 +541,81 @@ export default {
     font-size: 0.9rem;
   }
 }
+.offcanvas-end {
+  width: 300px;
+  border-left: none;
+  box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+}
+
+.offcanvas-header {
+  padding: 1.2rem 1.5rem;
+  background-color: #f8f9fa;
+}
+
+.list-group-item {
+  border-left: 0;
+  border-right: 0;
+  font-size: 1.1rem;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+}
+
+.list-group-item-action:hover {
+  background-color: #e9f5e9;
+  padding-left: 20px;
+}
+
+.list-group-item i {
+  font-size: 1.3rem;
+  width: 24px;
+  text-align: center;
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+  }
+  
+  .chat-toggle-btn {
+    bottom: 70px;
+  }
+  
+  .offcanvas-body {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 60px);
+  }
+  
+  .chat-wrapper-app {
+    height: 70vh;
+  }
+}
+
+/* Улучшаем видимость активных ссылок */
+.router-link-exact-active {
+  background-color: rgba(25, 135, 84, 0.1);
+  color: #198754 !important;
+  font-weight: 500;
+  border-left: 3px solid #198754;
+}
+
+/* Улучшаем кнопки в Offcanvas */
+.btn-outline-success {
+  transition: all 0.3s;
+}
+
+.btn-outline-success:hover {
+  background-color: #198754;
+  color: white !important;
+}
+
+/* Анимация открытия Offcanvas */
+.offcanvas {
+  transition: transform 0.4s ease-in-out;
+}
+
 </style>
