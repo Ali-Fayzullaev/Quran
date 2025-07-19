@@ -7,6 +7,7 @@ import QuranDet from "@/components/QuranDet.vue"; // Детальная стра
 import ChatGPT from "@/components/ChatGPT.vue";
 import i18n from "@/i18n";
 import NotFound from "@/views/NotFound.vue";
+import QuranPage from "@/components/QuranPage.vue";
 const routes = [
   { path: "/", component: Home,
     meta: { title: "siteTitle" },
@@ -35,6 +36,11 @@ const routes = [
     path: "/chatgpt",
     component: ChatGPT,
     meta: { title: "chatPageTitle" }
+  },
+  {
+    path: "/QuranPage",
+    component: QuranPage,
+    meta: { title: "QuranPage" }
   },
   {
     path: '/:pathMatch(.*)*',

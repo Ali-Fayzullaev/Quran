@@ -37,6 +37,12 @@
                 class="text-white text-decoration-none"
                 >{{ $t("duo") }}</router-link
               >
+              <router-link
+                to="/quranpage"
+                v-tooltip="'Quran Page'"
+                class="text-white text-decoration-none"
+                >{{ $t("QuranPage") }}</router-link
+              >
               <!-- <router-link
                 to="/chatgpt"
                 v-tooltip="'Если есть вопросы'"
