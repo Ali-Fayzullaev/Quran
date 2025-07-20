@@ -51,11 +51,17 @@ const pageNum = ref(savePageNum);
 const transitionDirection = ref("slide-left");
 const visiblePages = ref([]);
 const totalPages = ref(604);
-const dotsCount = ref(604);
+const dotsCount = ref(30);
 const touchStartX = ref(0);
 
 watch(pageNum, (newVal) => {
-  updateVisiblePages(savePageNum);
+  updateVisiblePages(newVal);
+
+  // Авто-скролл
+  setTimeout(() => {
+    const el = document.querySelector(".dot.active");
+    el?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }, 100); // setTimeout зарур, DOM янгиланиши учун
 });
 
 function updateVisiblePages(currentPage) {
@@ -138,10 +144,24 @@ onMounted(() => {
 
 .dots-container {
   display: flex;
-  justify-content: center;
+  flex-wrap: nowrap; /* ❗ 1 қаторда қолсин */
   gap: 8px;
-  flex-wrap: wrap;
+  padding: 10px 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
 }
+
+.dots-container::-webkit-scrollbar {
+  height: 6px;
+}
+.dots-container::-webkit-scrollbar-thumb {
+  background: #aaa;
+  border-radius: 3px;
+}
+.dots-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 
 .dot {
   width: 20px;
