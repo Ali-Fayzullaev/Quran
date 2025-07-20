@@ -1,7 +1,7 @@
 <template>
   <div class="mushaf-container">
     <div class="mushaf-viewer">
-      <div 
+      <div
         class="page-container"
         @touchstart="handleTouchStart"
         @touchend="handleTouchEnd"
@@ -19,18 +19,24 @@
 
       <!-- Прогресс-бар в виде точек -->
       <div class="progress-bar">
-        <div class="dots-container">
-          <div 
-            v-for="page in visiblePages" 
+        <div class="dots-container mt-5">
+          <div
+            v-for="page in visiblePages"
             :key="page"
             class="dot"
-            :class="{ 
-              'active': page === pageNum,
-              'current-range': Math.abs(page - pageNum) < 4
+            :class="{
+              active: page === pageNum,
+              'current-range': Math.abs(page - pageNum) < 4,
             }"
             @click="goToPageDirect(page)"
           >
-            <span v-if="page === pageNum" class="page-indicator">{{ page }}</span>
+            <span
+              v-if="page"
+              :class="
+                page == pageNum ? 'page-indicator' : 'page-indicator-small'
+              "
+              >{{ page }}</span
+            >
           </div>
         </div>
       </div>
@@ -38,69 +44,55 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      pageNum: 1,
-      transitionDirection: "slide-left",
-      visiblePages: [],
-      totalPages: 604,
-      dotsCount: 20, // Количество отображаемых точек
-    };
-  },
-  watch: {
-    pageNum(newVal) {
-      this.updateVisiblePages(newVal);
-    }
-  },
-  mounted() {
-    this.updateVisiblePages(1);
-  },
-  methods: {
-    updateVisiblePages(currentPage) {
-      // Рассчитываем диапазон страниц для отображения
-      const start = Math.max(1, currentPage - Math.floor(this.dotsCount / 2));
-      const end = Math.min(this.totalPages, start + this.dotsCount - 1);
-      
-      this.visiblePages = [];
-      for (let i = start; i <= end; i++) {
-        this.visiblePages.push(i);
-      }
-    },
-    goPrev() {
-      if (this.pageNum > 1) {
-        this.transitionDirection = "slide-right";
-        this.pageNum--;
-      }
-    },
-    goNext() {
-      if (this.pageNum < this.totalPages) {
-        this.transitionDirection = "slide-left";
-        this.pageNum++;
-      }
-    },
-    goToPageDirect(page) {
-      this.transitionDirection = page > this.pageNum ? "slide-left" : "slide-right";
-      this.pageNum = page;
-    },
-    handleTouchStart(e) {
-      this.touchStartX = e.touches[0].clientX;
-    },
-    handleTouchEnd(e) {
-      const touchEndX = e.changedTouches[0].clientX;
-      const diff = touchEndX - this.touchStartX;
-      
-      if (Math.abs(diff) > 50) {
-        if (diff > 0) {
-          this.goPrev();
-        } else {
-          this.goNext();
-        }
-      }
+<script setup>
+import { ref, watch, onMounted } from "vue";
+const savePageNum = localStorage.getItem("pageNum") || 1;
+const pageNum = ref(savePageNum);
+const transitionDirection = ref("slide-left");
+const visiblePages = ref([]);
+const totalPages = ref(604);
+const dotsCount = ref(604);
+const touchStartX = ref(0);
+
+watch(pageNum, (newVal) => {
+  updateVisiblePages(savePageNum);
+});
+
+function updateVisiblePages(currentPage) {
+  const start = Math.max(1, currentPage - Math.floor(dotsCount.value / 2));
+  const end = Math.min(totalPages.value, start + dotsCount.value - 1);
+
+  visiblePages.value = [];
+  for (let i = start; i <= end; i++) {
+    visiblePages.value.push(i);
+  }
+}
+
+function goToPageDirect(page) {
+  transitionDirection.value =
+    page > pageNum.value ? "slide-left" : "slide-right";
+  pageNum.value = page;
+  localStorage.setItem("pageNum", page);
+}
+function handleTouchStart(e) {
+  touchStartX.value = e.touches[0].clientX;
+}
+function handleTouchEnd(e) {
+  const touchEndX = e.changedTouches[0].clientX;
+  const diff = touchEndX - touchStartX.value;
+
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) {
+      goPrev();
+    } else {
+      goNext();
     }
   }
-};
+}
+
+onMounted(() => {
+  updateVisiblePages(1);
+});
 </script>
 
 <style scoped>
@@ -152,8 +144,8 @@ export default {
 }
 
 .dot {
-  width: 10px;
-  height: 10px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background-color: #ddd;
   cursor: pointer;
@@ -164,7 +156,7 @@ export default {
 }
 
 .dot.active {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   transform: scale(1.5);
   z-index: 2;
 }
@@ -176,9 +168,21 @@ export default {
 .page-indicator {
   position: absolute;
   top: -25px;
+  border: 2px solid rgb(16, 168, 2);
+  background-color: white;
+  padding: 3px;
+  border-radius: 5px;
   font-size: 0.8rem;
   font-weight: bold;
-  color: #4CAF50;
+  color: #4caf50;
+  white-space: nowrap;
+}
+.page-indicator-small {
+  position: absolute;
+  top: 6px;
+  font-size: 0.4rem;
+  font-weight: bold;
+  color: #797979;
   white-space: nowrap;
 }
 
@@ -221,19 +225,24 @@ export default {
   .dots-container {
     gap: 6px;
   }
-  
+
   .dot {
-    width: 8px;
-    height: 8px;
+    width: 18px;
+    height: 18px;
   }
-  
+
   .dot.active {
     transform: scale(1.3);
   }
-  
+
   .page-indicator {
     font-size: 0.7rem;
     top: -20px;
+  }
+  .page-indicator-small {
+    position: absolute;
+    top: 3px;
+    font-size: 0.4rem;
   }
 }
 
@@ -241,15 +250,20 @@ export default {
   .dots-container {
     gap: 4px;
   }
-  
+
   .dot {
-    width: 6px;
-    height: 6px;
+    width: 16px;
+    height: 16px;
   }
-  
+
   .page-indicator {
     font-size: 0.6rem;
     top: -18px;
+  }
+  .page-indicator-small {
+    position: absolute;
+    top: 3px;
+    font-size: 0.4rem;
   }
 }
 </style>
