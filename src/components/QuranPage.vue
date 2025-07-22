@@ -17,8 +17,9 @@
         </transition>
       </div>
 
+      <!-- Прогресс-бар в виде точек -->
       <div class="progress-bar">
-        <div class="dots-scroll-container" ref="scrollContainer">
+        <div class="dots-scroll-container">
           <div class="dots-container">
             <div
               v-for="page in visiblePages"
@@ -29,11 +30,6 @@
                 'current-range': Math.abs(page - pageNum) < 4,
               }"
               @click="goToPageDirect(page)"
-              :ref="
-                (el) => {
-                  if (page === pageNum) activeDot = el;
-                }
-              "
             >
               <span
                 :class="
@@ -50,7 +46,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, nextTick } from "vue";
+import { ref, watch, onMounted, onBeforeUnmount } from "vue";
 const savePageNum = localStorage.getItem("pageNum") || 1;
 const pageNum = ref(savePageNum);
 const transitionDirection = ref("slide-left");
@@ -59,35 +55,30 @@ const totalPages = ref(604);
 const dotsCount = ref(604);
 const touchStartX = ref(0);
 
-const scrollContainer = ref(null);
-const activeDot = ref(null);
+let lastVibrate = 0;
 
-watch(pageNum, async (newVal) => {
+watch(pageNum, (newVal) => {
   updateVisiblePages(newVal);
-  
-  // Ждем обновления DOM
-  await nextTick();
-  
-  // Центрируем активную точку
-  if (activeDot.value && scrollContainer.value) {
-    const container = scrollContainer.value;
-    const dot = activeDot.value;
-    
-    // Рассчитываем позицию для скролла
-    const containerRect = container.getBoundingClientRect();
-    const dotRect = dot.getBoundingClientRect();
-    
-    const scrollLeft = dot.offsetLeft - 
-                      (containerRect.width / 2) + 
-                      (dotRect.width / 2);
-    
-    // Плавный скролл
-    container.scrollTo({
-      left: scrollLeft,
-      behavior: 'smooth'
+
+  // Авто-скролл
+  setTimeout(() => {
+    const el = document.querySelector(".dot.active");
+    el?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest",
     });
-  }
+  }, 100); // setTimeout зарур, DOM янгиланиши учун
 });
+
+function handleScrollVibration() {
+  const now = Date.now();
+  if (navigator.vibrate && now - lastVibrate > 300) {
+    navigator.vibrate(20); // 20ms вибрация
+    lastVibrate = now;
+  }
+}
+
 function updateVisiblePages(currentPage) {
   const start = Math.max(1, currentPage - Math.floor(dotsCount.value / 2));
   const end = Math.min(totalPages.value, start + dotsCount.value - 1);
@@ -122,6 +113,18 @@ function handleTouchEnd(e) {
 
 onMounted(() => {
   updateVisiblePages(1);
+
+const scrollEl = document.querySelector(".dots-scroll-container");
+if (scrollEl) {
+  scrollEl.addEventListener("scroll", handleScrollVibration);
+}
+});
+
+onBeforeUnmount(() => {
+  const scrollEl = document.querySelector(".dots-scroll-container");
+  if (scrollEl) {
+    scrollEl.removeEventListener("scroll", handleScrollVibration);
+  }
 });
 </script>
 
@@ -160,40 +163,41 @@ onMounted(() => {
   display: block;
 }
 
-/* Стили для прогресс-бара */
 .progress-bar {
   width: 100%;
-  padding: 0;
+  padding: 0px 0;
   position: relative;
   overflow: hidden;
 }
 
 .dots-scroll-container {
   overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  padding-bottom: 30px;
-  padding-top: 20px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  padding-bottom: 30px; /* Для градиентного эффекта */
+  padding-top: 20px; /* Для градиентного эффекта */
   mask-image: linear-gradient(
     to right, 
     transparent 0%, 
     #000 10%, 
     #000 90%, 
     transparent 100%
+    
   );
-  display: flex;
 }
 
 .dots-scroll-container::-webkit-scrollbar {
-  display: none;
+  display: none; /* Chrome/Safari */
+  
 }
 
 .dots-container {
   display: flex;
   gap: 6px;
-  padding: 0 50%; /* Центрирование через паддинги */
-  margin: 0 auto;
+  padding: 10px calc(50% - 15px); /* Центрирование активной точки */
+  transition: transform 0.3s ease;
 }
+
 .dot {
   width: 16px;
   height: 26px;
@@ -205,19 +209,21 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .dot.active {
   background-color: #4caf50;
-  border: 2px dotted rgb(30, 255, 0);
+  border: 2px dotted rgb(255, 238, 0);
   transform: scale(1.4);
-  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3), 0 3px 6px rgba(0, 0, 0, 0.16);
+  box-shadow: 
+    0 0 0 2px rgba(76, 175, 80, 0.3),
+    0 3px 6px rgba(0,0,0,0.16);
   z-index: 2;
 }
 
 .dot.current-range {
-  background-color: #bfe8c1;
+  background-color: #BFE8C1;
   transform: scale(1.1);
 }
 
@@ -231,7 +237,7 @@ onMounted(() => {
   font-weight: bold;
   color: #4caf50;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   z-index: 3;
 }
 
@@ -251,13 +257,13 @@ onMounted(() => {
     width: 14px;
     height: 14px;
   }
-
+  
   .page-indicator {
     font-size: 0.65rem;
     top: -20px;
     padding: 1px 6px;
   }
-
+  
   .page-indicator-small {
     font-size: 0.5rem;
     bottom: -16px;
@@ -268,12 +274,12 @@ onMounted(() => {
   .dots-container {
     gap: 4px;
   }
-
+  
   .dot {
     width: 12px;
     height: 12px;
   }
-
+  
   .page-indicator {
     font-size: 0.6rem;
     top: -18px;
