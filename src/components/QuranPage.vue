@@ -79,7 +79,8 @@ watch(pageNum, (newVal) => {
 
 
 function handleScrollVibration() {
-  if (!userInteracted || !navigator.vibrate) return;
+  if (!userInteracted || !('vibrate' in navigator)) return;
+  if (!scrollEl.value || !scrollEl.value.scrollLeft) return;
   
   const now = Date.now();
   if (now - lastVibrateTime < 300) return;
@@ -99,14 +100,15 @@ function updateVisiblePages(currentPage) {
 }
 
 function goToPageDirect(page) {
-  // Вибрация при клике
-  if (navigator.vibrate) navigator.vibrate(10);
+  if ('vibrate' in navigator) navigator.vibrate(10);
   
   transitionDirection.value =
     page > pageNum.value ? "slide-left" : "slide-right";
   pageNum.value = page;
   localStorage.setItem("pageNum", page);
 }
+
+
 function handleTouchStart(e) {
   touchStartX.value = e.touches[0].clientX;
 }
@@ -129,6 +131,11 @@ onMounted(() => {
   document.addEventListener('click', () => {
     userInteracted = true;
   }, { once: true });
+
+  // Для мобильных устройств
+  document.addEventListener('touchstart', () => {
+    userInteracted = true;
+  }, { once: true, passive: true });
 
   if (scrollEl.value) {
     scrollEl.value.addEventListener("scroll", handleScrollVibration, {
