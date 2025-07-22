@@ -55,7 +55,7 @@ const messages = {
     asr: "Аср",
     maghrib: "Магриб",
     isha: "Иша",
-    QuranPage: "Коран страница"
+    QuranPage: "Коран страница",
     
 
   },
@@ -117,7 +117,8 @@ const messages = {
     isha: "Isha",
 
     
-    QuranPage: "Quran Page"
+    QuranPage: "Quran Page",
+
   },
 };
 

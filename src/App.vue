@@ -57,6 +57,12 @@
                 class="text-white text-decoration-none"
                 >{{ $t("QuranPage") }}</router-link
               >
+              <router-link
+                to="/quranpagetwo"
+                v-tooltip="'Quran Page Two'"
+                class="text-white text-decoration-none"
+                >{{ $t("QuranPageTwo") }}</router-link
+              >
             </nav>
 
             <!-- Языковой переключатель -->
